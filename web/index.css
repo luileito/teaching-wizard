@@ -1,0 +1,96 @@
+.global {
+    max-width: 90%;
+    margin: 1em auto;
+}
+.heading {
+    font-weight: 300;
+}
+.slider-title {
+    font-weight: bold;
+    text-align: right;
+}
+.slider-group {
+    display: flex;
+    align-items: flex-end;
+}
+.slider-group label {
+    margin-bottom: 0;
+}
+.slider-value {
+    display: block;
+    font-size: 80%;
+    min-height: 1.1em;
+    line-height: 1.1;
+}
+.slider-end {
+    color: #555;
+}
+input[type="checkbox"] {
+    vertical-align: middle;
+}
+input[type="range"] {
+    display: block;
+    width: 100%;
+}
+.inactive {
+    color: #aaa;
+}
+.meter-gauge {
+    width: 200px;
+    height: 8px;
+    background-color: #ccc;
+    display: block;
+    font-size: 70%;
+    margin-bottom: 1.2em;
+    cursor: default;
+}
+.meter-gauge > span {
+    height: inherit;
+    display: block;
+    background-color: #0099CC;
+    color: #fff;
+    padding-left: 1em;
+    font-weight: bold;
+}
+.form-buttons .btn {
+    margin: .25em .5em;
+}
+.method .title {
+    font-size: 200%;
+}
+.method .description {
+    font-size: 130%;
+    font-style: italic;
+    color: #555;
+}
+.card {
+    margin: 1em auto;
+}
+.card-header {
+    font-weight: 500;
+}
+footer {
+    font-size: 90%;
+    color: #777;
+}
+@media (max-width: 600px) {
+    .slider-group {
+        margin-bottom: 1.5em;
+    }
+    .slider-range-wrap {
+        width: auto;
+    }
+    .slider-title {
+        text-align: left;
+    }
+    .slider-value {
+        display: none;
+    }
+    .slider-end {
+        width: auto;
+    }
+    input[type="range"] {
+        display: inline;
+        width: auto;
+    }
+}

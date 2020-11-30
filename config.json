@@ -1,0 +1,6 @@
+{
+  "__comment": "Launch these services via CLI, e.g. php -S localhost:1100",
+  "api_server": "http://localhost:1100",
+  "db_server": "http://localhost:1101",
+  "ui_server": "http://localhost:1102"
+}

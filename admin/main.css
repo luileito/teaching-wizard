@@ -1,0 +1,7 @@
+.global {
+  padding: 1em;
+}
+
+label {
+  font-weight: bold;
+}
