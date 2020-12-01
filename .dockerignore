@@ -1,0 +1,6 @@
+.git
+docker-compose.yml
+docker/
+.DS_Store
+.idea
+.gitignore

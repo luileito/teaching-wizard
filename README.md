@@ -15,20 +15,47 @@ Ensure you have SQLite installed:
 ~$ php -r 'var_dump(class_exists("SQLite3"));'
 ```
 
-And install DB via:
+And initialize DB via:
 ```
-~$ sqlite3 methods.db < create.sql
+~$ sqlite3 data/methods.db < data/create.sql
 ```
+
+### Configuration
+
+Create a copy of the `sample.env` as `.env`:
+```
+~$ cp sample.env .env
+```
+
+You can adjust the configuration in this file.
+As of now, you should only edit the authentication options `AUTH_USER` and `AUTH_HASH`
+that must be changed before the admin interface can be accessed.
+
+To do so, run the following command with a new password:
+```
+~$ php -r 'echo password_hash("<NEW_PASS>", PASSWORD_DEFAULT) . "\n";'
+```
+Copy the result into `AUTH_HASH` (make sure not to copy any unrelated characters).
+
 
 ### Web services
 
-See `config.json` and launch each URL via CLI, e.g.:
+Ensure [Docker](https://docs.docker.com/get-docker/) is installed.
+
+Build the containers via:
 ```
-~$ cd web
-~$ php -S http://localhost:1102
+~$ docker-compose build
 ```
 
-TODO: Add production servers and dockerize these services.
+Then you can run them in composition:
+```
+~$ docker-compose up
+```
+
+The service is now available at:
+* Main interface: http://localhost:8080/
+* API: http://localhost:8080/api/
+* Admin: http://localhost:8080/admin/
 
 ## Team
 

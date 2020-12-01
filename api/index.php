@@ -4,7 +4,9 @@
   ~$ php -S localhost:port
 */
 require '../config.php';
-require '../admin/db.php';
+require '../common/request.php';
+require '../common/db.php';
+global $CONFIG, $UI_PARAMS;
 
 
 function response($res) {
