@@ -2,12 +2,24 @@ version: "3"
 
 services:
   nginx:
-    build: ./docker/nginx
+    build:
+      context: ./docker/nginx
+      args:
+        - config=${NGINX_CONF:-site.conf}
     restart: unless-stopped
+    environment:
+      - SERVER_NAME=${SERVER_NAME:-localhost}
+      - SSL_PORT=${HTTPS_PORT:-443}
+    expose:
+      - 8000
     ports:
       - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
     volumes:
-      - ./docker/nginx/site.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/${NGINX_CONF:-site.conf}:/etc/nginx/templates/default.conf
+      - ./docker/nginx/snippets:/etc/nginx/snippets
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+      - ./docker/certbot:/var/www/certbot
       - .:/usr/src
     networks:
       - server-net
@@ -61,6 +73,11 @@ services:
       - 9000
     networks:
       - server-net
+#  certbot:
+#    image: certbot/certbot
+#    volumes:
+#      - ./docker/nginx/ssl/certbot:/etc/letsencrypt
+#      - ./docker/certbot:/var/www/certbot
 
 # If desired, the sqlite file can be stored inside docker volumes (faster).
 #  No direct access to the file is then available though, and initialization must be made programmatically.
