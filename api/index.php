@@ -29,22 +29,23 @@ function sorting_methods($feat_query, $feature_lo, $feature_hi) {
         }
     }
 
-    // Compute the distance and return a Flag in case the query is within the bound
-    // Flag respect = 1 if the query for a feature is within the method range, it is 0 otherwise
-    // Flag respect is a table which can help to trace back which feature is not respected
-    // but it may be useless if we present the range while describing the method
-    // When the query respect the method range, its distance is 0
-
+    // Compute the distance and return a `$respect` Flag in case the query is within distance bounds.
+    // Flag is 1 if the query for a feature is within the method range, or 0 otherwise.
+    // Flag is a table which can help to trace back which feature is not respected,
+    // but it may be useless if we present the range while describing the method.
+    // When the query respect the method range, its distance is 0.
     $respect = array();
     $num_viols = array_fill(0, $num_methods, 0);
     $distances = array_fill(0, $num_methods, 0);
     $scores = array_fill(0, $num_methods, 0);
     $results = array();
     for ($nMeth = 0; $nMeth < $num_methods; $nMeth++) {
-        // Filling $respect to 1 so that if the feature is not selected, the bounds are automatically respected
-        // Hence we only update the table in case the feature is selected
+        // Filling `$respect` with `1`s so that if the feature is not selected,
+        // the bounds are automatically respected.
+        // Hence we only update the table in case the feature is selected.
         $respect[$nMeth] = array_fill(0, $num_feats, 1);
-        // Avoiding to perform the sum on array => employing auxiliary variable and then storing the sum in the array
+        // Avoid performing the sum on array by employing auxiliary variable
+        // and then storing the sum in the array.
         $dist = 0;
         $viol = 0;
         for ($nFeat = 0; $nFeat < $num_feats ; $nFeat++) {
@@ -57,16 +58,17 @@ function sorting_methods($feat_query, $feature_lo, $feature_hi) {
                 $viol = $viol + 1;
                 $respect[$nMeth][$nFeat] = 0;
                 // DISTANCE COMPUTATION
-                // the distance between the query X and the lower bound L is L-X
-                // the distance between the query X and the higher bound H is X-H
-                // since in this case at least one bound is not respected : one of them is positive while the other is negative
-                // we just need to keep the positive value and then dist = max(L-X, X-H)
-                // the maximum distance is 5-1 = 4 => Hence we normalized each distance by 4,
-                // in order to obtain a distance with every feature between 0 and 1
+                // The distance between the query X and the lower bound L is `L - X`.
+                // The distance between the query X and the higher bound H is `X - H`.
                 $distL = $feature_lo[$nMeth][$nFeat] - $feat_query[$nFeat];
                 $distH = $feat_query[$nFeat] - $feature_hi[$nMeth][$nFeat];
+                // Since in this case at least one bound is not respected
+                // (one of them is positive while the other is negative),
+                // we just need to keep the positive value so `dist = max(L-X, X-H)`.
+                // The maximum distance is `5 - 1 = 4`, so normalized each distance by 4
+                // in order to obtain a distance with every feature between 0 and 1.
                 $distLH = max($distL, $distH)/4;
-                // if the feature is not selected we set its distance to 0
+                // If the feature is not selected we set its distance to 0.
                 $dist = $dist + ($distLH * $distLH);
             }
         }
