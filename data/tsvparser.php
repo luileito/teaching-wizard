@@ -1,7 +1,7 @@
 <?php
 function parse_tsv($db_filename, $sep="\t") {
     // For the records, these are the columns we need from the Excel file:
-    // - name
+    // - method name
     // - group_size
     // - student_workload
     // - teacher_workload
@@ -9,8 +9,8 @@ function parse_tsv($db_filename, $sep="\t") {
     // - teacher_experience
     // - student_interaction
     // - description
-    // - strenghs
-    // - challenges
+    // - strenghs (pros)
+    // - challenges (cons)
     $database_raw = file($db_filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     if (!$database_raw) {
