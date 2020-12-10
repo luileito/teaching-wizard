@@ -17,7 +17,11 @@ class DB {
 
         if (!empty(self::$DB)) return self::$DB;
 
-        self::$DB = new PDO($CONFIG->PDO_URI);
+        try {
+            self::$DB = new PDO($CONFIG->PDO_URI);
+        } catch(PDOException $ex) {
+            self::$DB = NULL;
+        }
 
         return self::$DB;
     }
@@ -42,7 +46,7 @@ class DB {
     }
 
     static function rank() {
-        if (!class_exists('SQLite3')) {
+        if (self::$DB == NULL) {
             return self::rank_fallback();
         }
 
@@ -50,7 +54,7 @@ class DB {
     }
 
     static function getAll() {
-        if (!class_exists('SQLite3')) {
+        if (self::$DB == NULL) {
             throw new Exception('SELECT operation not supported in file mode.');
         }
 
@@ -61,7 +65,7 @@ class DB {
     }
 
     static function getOne($id) {
-        if (!class_exists('SQLite3')) {
+        if (self::$DB == NULL) {
             throw new Exception('SELECT operation not supported in file mode.');
         }
 
@@ -72,7 +76,7 @@ class DB {
     }
 
     static function insert($entry) {
-        if (!class_exists('SQLite3')) {
+        if (self::$DB == NULL) {
             throw new Exception('INSERT operation not supported in file mode.');
         }
 
@@ -86,7 +90,7 @@ class DB {
     }
 
     static function update($id, $entry) {
-        if (!class_exists('SQLite3')) {
+        if (self::$DB == NULL) {
             throw new Exception('UPDATE operation not supported in file mode.');
         }
 
@@ -103,7 +107,7 @@ class DB {
     }
 
     static function delete($id) {
-        if (!class_exists('SQLite3')) {
+        if (self::$DB == NULL) {
             throw new Exception('DELETE operation not supported in file mode.');
         }
 
@@ -123,8 +127,7 @@ class DB {
         $st = $db->query("SELECT * FROM methods");
 
         if (!$st) {
-//            return array(array(), array(), array());
-            print_r($db->errorInfo());
+            throw new Exception($db->errorInfo());
         }
 
         while ($row = $st->fetch(PDO::FETCH_ASSOC)) {
