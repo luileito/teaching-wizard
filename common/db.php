@@ -1,26 +1,24 @@
 <?php
 /*
-  Ensure you have SQLite installed:
-  ~$ php -r 'var_dump(class_exists("SQLite3"));'
-  And install DB via:
-  ~$ sqlite3 methods.db < create.sql
+  See `tsv2sqlite.php` and `tsv2mysql.php` for import/export instructions.
 */
 
 require_once '../config.php';
 
 class DB {
 
-    static private $DB;
+    static private $DB = NULL;
 
     static function getInstance() {
         global $CONFIG;
 
-        if (!empty(self::$DB)) return self::$DB;
+        if (self::$DB !== NULL) return self::$DB;
 
         try {
-            self::$DB = new PDO($CONFIG->PDO_URI);
-        } catch(PDOException $ex) {
-            self::$DB = NULL;
+            self::$DB = new PDO($CONFIG->PDO_URI,
+              $CONFIG->PDO_USER, $CONFIG->PDO_PASS);
+        } catch (PDOException $ex) {
+            self::$DB = FALSE;
         }
 
         return self::$DB;
@@ -46,7 +44,8 @@ class DB {
     }
 
     static function rank() {
-        if (self::$DB == NULL) {
+        $db = self::getInstance();
+        if ($db === FALSE) {
             return self::rank_fallback();
         }
 
@@ -54,29 +53,29 @@ class DB {
     }
 
     static function getAll() {
-        if (self::$DB == NULL) {
+        $db = self::getInstance();
+        if ($db === FALSE) {
             throw new Exception('SELECT operation not supported in file mode.');
         }
 
-        $db = self::getInstance();
         $st = $db->query("SELECT * FROM methods");
-
-        return $st->fetch(PDO::FETCH_ASSOC);
+        return $st->fetchAll(PDO::FETCH_ASSOC);
     }
 
     static function getOne($id) {
-        if (self::$DB == NULL) {
+        $db = self::getInstance();
+        if ($db === FALSE) {
             throw new Exception('SELECT operation not supported in file mode.');
         }
 
-        $db = self::getInstance();
         $st = $db->query("SELECT * FROM methods WHERE id = ".intval($id));
 
         return $st->fetch(PDO::FETCH_ASSOC);
     }
 
     static function insert($entry) {
-        if (self::$DB == NULL) {
+        $db = self::getInstance();
+        if ($db === FALSE) {
             throw new Exception('INSERT operation not supported in file mode.');
         }
 
@@ -85,12 +84,12 @@ class DB {
         $values = array_values($entry);
         $query = "INSERT INTO methods({$names}) VALUES ({$values})";
 
-        $db = self::getInstance();
         return $db->exec($query);
     }
 
     static function update($id, $entry) {
-        if (self::$DB == NULL) {
+        $db = self::getInstance();
+        if ($db === FALSE) {
             throw new Exception('UPDATE operation not supported in file mode.');
         }
 
@@ -102,18 +101,17 @@ class DB {
         $values = implode(', ', $values);
         $query = "UPDATE methods SET {$values} WHERE id = ".intval($id);
 
-        $db = self::getInstance();
         return $db->exec($query);
     }
 
     static function delete($id) {
-        if (self::$DB == NULL) {
+        $db = self::getInstance();
+        if ($db === FALSE) {
             throw new Exception('DELETE operation not supported in file mode.');
         }
 
         $query = "DELETE FROM methods WHERE id = ".intval($id);
 
-        $db = self::getInstance();
         return $db->exec($query);
     }
 
@@ -161,10 +159,10 @@ class DB {
     }
 
     protected function rank_fallback() {
-        require 'tsvparser.php';
+        require '../data/tsvparser.php';
 
         // Fallback case: Load exported Excel sheet from gDrive.
-        $filename = dirname(__FILE__).'/methods.tsv';
+        $filename = '../data/methods.tsv';
         list($database, $feature_lo, $feature_hi) = parse_tsv($filename);
 
         return array($database, $feature_lo, $feature_hi);
