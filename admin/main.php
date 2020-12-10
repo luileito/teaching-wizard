@@ -36,6 +36,11 @@
                   die('<p class="alert alert-warning">Cannot update entry. Please try again later.</p>');
               }
               $is_save = TRUE;
+
+              // Update queries return the affected IDs, so fetch the updated entry.
+              // XXX: At this point there should be no errors, so no need to double-check.
+              $fetch_one = do_request($CONFIG->API_SERVER.'?action=getone&id='.$id);
+              $entry = $fetch_one->result;
           }
       }
 
