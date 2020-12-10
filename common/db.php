@@ -5,15 +5,19 @@
   And install DB via:
   ~$ sqlite3 methods.db < create.sql
 */
+
+require_once '../config.php';
+
 class DB {
 
     static private $DB;
 
     static function getInstance() {
+        global $CONFIG;
+
         if (!empty(self::$DB)) return self::$DB;
 
-        $filename = dirname(__FILE__).'/methods.db';
-        self::$DB = new PDO('sqlite:'.$filename);
+        self::$DB = new PDO($CONFIG->PDO_URI);
 
         return self::$DB;
     }
@@ -117,6 +121,11 @@ class DB {
 
         $db = self::getInstance();
         $st = $db->query("SELECT * FROM methods");
+
+        if (!$st) {
+//            return array(array(), array(), array());
+            print_r($db->errorInfo());
+        }
 
         while ($row = $st->fetch(PDO::FETCH_ASSOC)) {
             $database[] = array(

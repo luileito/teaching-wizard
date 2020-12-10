@@ -4,8 +4,10 @@
   ~$ php -S localhost:port
 */
 require '../config.php';
+require '../common/request.php';
+global $CONFIG;
 
-$fetch_all = do_request($CONFIG->api_server, $_POST);
+$fetch_all = do_request($CONFIG->API_SERVER, $_POST);
 if ($fetch_all->error !== FALSE) {
     // FIXME: Display a fully-fledge web page instead of this sentence.
     die('API server not working. Please try again later.');

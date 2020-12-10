@@ -1,7 +1,8 @@
 <?php
 require '../config.php';
+global $CONFIG;
 
-if ($AUTH_SALT == 'some secret' || $AUTH_HASH = '9284c0d2314dca7dbace2b782d781717') {
+if ($CONFIG->AUTH_HASH == '') {
     die('Please edit config.php and setup your authentication options.');
 }
 
@@ -14,9 +15,9 @@ if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
     exit;
 
 } else {
-
-    $hash = md5($_SERVER['PHP_AUTH_USER'].':'.$AUTH_SALT.':'.$_SERVER['PHP_AUTH_PW']);
-    if ($hash !== $AUTH_HASH) {
+    if ($_SERVER['PHP_AUTH_USER'] !== $CONFIG->AUTH_USER
+        || !password_verify($_SERVER['PHP_AUTH_PW'], $CONFIG->AUTH_HASH)
+    ) {
         echo 'Wrong credentials.';
         exit;
     }

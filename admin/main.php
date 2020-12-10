@@ -11,12 +11,14 @@
 
       <?php
       require_once '../config.php';
+      require_once '../common/request.php';
+      global $CONFIG, $UI_PARAMS;
 
       if (!empty($_POST)) {
           $id = filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
 
           if (!empty($_POST['delete'])) {
-              $delete = do_request($CONFIG->api_server.'?action=delete&id='.$id);
+              $delete = do_request($CONFIG->API_SERVER.'?action=delete&id='.$id);
               if ($delete->error !== FALSE) {
                   die('<p class="alert alert-warning">Cannot delete entry. Please try again later.</p>');
               }
@@ -24,12 +26,12 @@
               // Submit only the data we want to insert in the DB.
               unset($_POST['insert']);
 
-              $insert = do_request($CONFIG->api_server.'?action=insert', $_POST);
+              $insert = do_request($CONFIG->API_SERVER.'?action=insert', $_POST);
               if ($insert->error !== FALSE) {
                   die('<p class="alert alert-warning">Cannot add entry. Please try again later.</p>');
               }
           } else {
-              $update = do_request($CONFIG->api_server.'?action=update&id='.$id, $_POST);
+              $update = do_request($CONFIG->API_SERVER.'?action=update&id='.$id, $_POST);
               if ($update->error !== FALSE) {
                   die('<p class="alert alert-warning">Cannot update entry. Please try again later.</p>');
               }
@@ -39,7 +41,7 @@
 
       if (isset($_GET['edit'])) {
           $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
-          $fetch_one = do_request($CONFIG->api_server.'?action=getone&id='.$id);
+          $fetch_one = do_request($CONFIG->API_SERVER.'?action=getone&id='.$id);
 
           if ($fetch_one->error !== FALSE) {
               die('<p class="alert alert-warning">'.sprintf('Cannot find entry with id %s.', $id).'</p>');
@@ -47,7 +49,7 @@
           $entry = $fetch_one->result;
       }
 
-      $fetch_all = do_request($CONFIG->api_server);
+      $fetch_all = do_request($CONFIG->API_SERVER);
       if ($fetch_all->error !== FALSE) {
           die('<p class="alert alert-warning">API server not working. Please try again later.</p>');
       }
