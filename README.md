@@ -8,9 +8,6 @@ A Database of Pedagogical Strategies and Search Interface.
 
 ## Installation
 
-The following sections don't assume a Dockerized system,
-though it is highly encouraged. Below
-
 ### Configuration
 
 Create a copy of the `sample.env` as `.env`:
@@ -19,7 +16,8 @@ Create a copy of the `sample.env` as `.env`:
 ```
 
 You can adjust the configuration in this file.
-As of now, you should only edit the authentication options `AUTH_USER` and `AUTH_HASH`
+
+Edit the authentication options `AUTH_USER` and `AUTH_HASH`
 that must be changed before the admin interface can be accessed.
 
 To do so, run the following command with a new password:
@@ -31,6 +29,9 @@ Copy the result into `AUTH_HASH` (make sure not to copy any unrelated characters
 ### Database
 
 Currently both SQLite and MySQL engines are supported.
+
+This sections doesn't assume a Dockerized system,
+though it is highly encouraged.
 
 #### SQLite installation
 
@@ -52,7 +53,17 @@ Initialize DB via:
 
 And set `PDO_URI=sqlite:data/methods.db` in your `.env` file.
 
-**Note:** If running on Docker, set `PDO_URI=sqlite:/usr/data/methods.db` in your `.env` file.
+
+##### Docker
+
+If running on Docker, set `PDO_URI=sqlite:/usr/data/methods.db` in your `.env` file.
+
+Be sure to uncomment the volume includes for the `api` and `admin` services.
+The lines are marked before with 
+
+`# If using SQLite, include volume to database file`.
+
+You can comment out the `db` service (MySQL) in that case.
 
 #### MySQL installation
 
@@ -74,7 +85,23 @@ Initialize DB via:
 ```
 where `$PDO_USER` and `$PDO_PASS` are the values you set before in your `.env` file.
 
-And set `PDO_URI=mysql:host=localhost;dbname=teaching_wizard` in your `.env` file.
+And set `PDO_URI="mysql:host=localhost;dbname=teaching_wizard"` in your `.env` file.
+
+##### Docker
+
+If running on Docker, use the database host name `db` in the connection URI in your `.env` file,
+like so: `PDO_URI="mysql:host=db;dbname=teaching_wizard"`.
+
+Also, you must set the variables `PDO_USER`, `PDO_PASS`, `MYSQL_ROOT_PASS`,
+and `PDO_DATABASE` (make sure it matches the `dbname=` property of the `PDO_URI`).
+
+You may want to customize the forwarded port of the Docker database to your host machine with the
+`DB_PORT` setting (e.g., if you have a local MySQL database running as well).
+This is just to enable the usage of other MySQL clients to connect to the database server.
+
+These settings must be set before starting the MySQL container for the first time.
+
+Initializing the database must be done after it has started for the first time, see below.
 
 ### HTTPS support
 
@@ -126,6 +153,13 @@ Build the containers via:
 Then you can run them in composition:
 ```
 ~$ docker-compose up
+```
+
+When using mysql, make sure it has successfully initialized the server,
+and then run the script `import-db.sh` in your root directory to import the default data:
+
+```
+~$ bash docker/import-db.sh
 ```
 
 The services are now available at:

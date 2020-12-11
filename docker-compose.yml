@@ -52,10 +52,12 @@ services:
         - dir=api
     volumes:
       - .:/usr/src
-#       - sqlite-data:/usr/data
-      - ./data:/usr/data
+      # If using SQLite, include volume to database file
+      #- ./data:/usr/data
     expose:
       - 9000
+    depends_on:
+      - db
     networks:
       - server-net
 
@@ -67,22 +69,52 @@ services:
         - dir=admin
     volumes:
       - .:/usr/src
-#       - sqlite-data:/usr/data
-      - ./data:/usr/data
+      # If using SQLite, include volume to database file
+      #- ./data:/usr/data
     expose:
       - 9000
+    depends_on:
+      - db
     networks:
       - server-net
+
+  db:
+    image: mysql:8
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
+      MYSQL_DATABASE: ${PDO_DATABASE}
+      MYSQL_USER: ${PDO_USER}
+      MYSQL_PASSWORD: ${PDO_PASS}
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    # Switch to internal data storage
+    # - mysql-data:/var/lib/mysql
+    networks:
+      - server-net
+
+  # Database administration tool
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8180:8080
+    networks:
+      - server-net
+
+# Image for generating Let's Encrypt certificates
 #  certbot:
 #    image: certbot/certbot
 #    volumes:
 #      - ./docker/nginx/ssl/certbot:/etc/letsencrypt
 #      - ./docker/certbot:/var/www/certbot
 
-# If desired, the sqlite file can be stored inside docker volumes (faster).
-#  No direct access to the file is then available though, and initialization must be made programmatically.
+# If desired, the database files can be stored inside docker volumes (faster).
+#  No direct access to the files is then available though.
 # volumes:
-#   sqlite-data:
+#   mysql-data:
 
 networks:
   server-net:

@@ -18,6 +18,7 @@ class DB {
             self::$DB = new PDO($CONFIG->PDO_URI,
               $CONFIG->PDO_USER, $CONFIG->PDO_PASS);
         } catch (PDOException $ex) {
+            error_log($ex->getMessage());
             self::$DB = FALSE;
         }
 
@@ -125,7 +126,7 @@ class DB {
         $st = $db->query("SELECT * FROM methods");
 
         if (!$st) {
-            throw new Exception($db->errorInfo());
+            throw new Exception(sprintf("PDO Error: SQLSTATE[%s]: %s %s", ...$db->errorInfo()));
         }
 
         while ($row = $st->fetch(PDO::FETCH_ASSOC)) {

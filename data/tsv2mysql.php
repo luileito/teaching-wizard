@@ -6,6 +6,8 @@
 require 'tsvparser.php';
 require 'tsvutils.php';
 
+$options = getopt("D", ["skip-db-stmt"]);
+
 $coldefs = array(
     'id' => 'INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
     'title' => 'VARCHAR(255) NOT NULL',
@@ -32,8 +34,10 @@ foreach ($coldefs as $key => $value) {
 }
 $defvals = implode(', ', $defvals);
 
-print_r("CREATE DATABASE IF NOT EXISTS teaching_wizard;".PHP_EOL);
-print_r("USE teaching_wizard;".PHP_EOL);
+if (!array_key_exists('D', $options) && !array_key_exists('skip-db-stmt', $options)) {
+    print_r("CREATE DATABASE IF NOT EXISTS teaching_wizard;".PHP_EOL);
+    print_r("USE teaching_wizard;".PHP_EOL);
+}
 print_r("DROP TABLE IF EXISTS methods;".PHP_EOL);
 print_r("CREATE TABLE methods({$defvals});".PHP_EOL);
 
