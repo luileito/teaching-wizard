@@ -8,6 +8,9 @@ A Database of Pedagogical Strategies and Search Interface.
 
 ## Installation
 
+The following sections don't assume a Dockerized system, though it is highly encouraged.
+Below you can find instructions for a Docker installation.
+
 ### Configuration
 
 Create a copy of the `sample.env` as `.env`:
@@ -30,9 +33,6 @@ Copy the result into `AUTH_HASH` (make sure not to copy any unrelated characters
 
 Currently both SQLite and MySQL engines are supported.
 
-This sections doesn't assume a Dockerized system,
-though it is highly encouraged.
-
 #### SQLite installation
 
 Ensure you have SQLite installed:
@@ -51,12 +51,14 @@ Initialize DB via:
 ~$ sqlite3 data/methods.db < data/sqlite.sql
 ```
 
-And set `PDO_URI=sqlite:data/methods.db` in your `.env` file.
+And set `PDO_URI=sqlite:<ABSPATH>/data/methods.db` in your `.env` file,
+where `<ABSPATH>` is the absolute path of this repository in your hard drive.
 
 
 ##### Docker
 
-If running on Docker, set `PDO_URI=sqlite:/usr/data/methods.db` in your `.env` file.
+If running on Docker, set `PDO_URI=sqlite:/usr/data/methods.db` in your `.env` file,
+since the absolute path of the Dockerized system is `/usr`.
 
 Be sure to uncomment the volume includes for the `api` and `admin` services.
 The lines are marked before with 
@@ -81,9 +83,9 @@ Set the auth credentials (`PDO_USER` and `PDO_PASS`) in your `.env` file.
 
 Initialize DB via:
 ```
-~$ mysql -u $PDO_USER -p'$PDO_PASS' < data/mysql.sql
+~$ mysql -u PDO_USER -p'PDO_PASS' < data/mysql.sql
 ```
-where `$PDO_USER` and `$PDO_PASS` are the values you set before in your `.env` file.
+where `PDO_USER` and `PDO_PASS` are the values you set before in your `.env` file.
 
 And set `PDO_URI="mysql:host=localhost;dbname=teaching_wizard"` in your `.env` file.
 
@@ -105,41 +107,35 @@ Initializing the database must be done after it has started for the first time, 
 
 ### HTTPS support
 
-You can enable HTTPS support by uncommenting the line
+The following instructions apply to the Dockerized installation only.
+
+You can enable HTTPS support by uncommenting in your `.env` file the line
 ```
 #;NGINX_CONF=site-ssl.conf
 ```
-in the `.env` file.
 By default, it uses a self-signed certificate for `localhost`.
 
 You can replace the provided certificates in `./docker/nginx/ssl/server.{crt,key}`
-either with your own self-generated one
-by running the `./docker/ssl-generate.sh` script,
-or with a proper SSL certificate.
+either with your own self-generated one by running the `./docker/ssl-generate.sh` script,
+or with a proper SSL certificate, such as those provided by https://letsencrypt.org
 
 Adjust accordingly the settings `SERVER_NAME` to match the certificate domain
- and `HTTPS_PORT` if desired.
-
-Rebuild the `nginx` container after changing these settings via `docker-compose build nginx`.
+and `HTTPS_PORT` if needed, and rebuild the `nginx` container via `docker-compose build nginx`.
 
 #### Using Let's Encrypt
 
-The certbot docker image is available but disabled in the current config.
-Enable it by uncommenting the lines in `docker-compose.yml` to be able to use it.
-
-If you are running on a proper server, at this point the SSL option from above should not be enabled yet.
-
-To retrieve a certificate from Let's Encrypt,
-run the command `docker-compose run --rm certbot certonly`.
+If you go for the Dockerized installation,
+there is a certbot image available but disabled in the current config.
+Enable it by uncommenting the lines in `docker-compose.yml` and retrieve a certificate from Let's Encrypt
+with the command `docker-compose run --rm certbot certonly`.
 You should be able to select the second option as the default nginx config serves the certbot challenge.
 
-You will need to do additional changes, to integrate the certificate after retrieving it.
-The certificate will be saved in a different file (most likely in `./docker/nginx/ssl/certbot/live/<domain>`),
-so adjust the nginx config accordingly.
+The certificate will be saved in a location like `./docker/nginx/ssl/certbot/live/<domain>`,
+so adjust your nginx config accordingly.
 
-Also, don't forget to renew it regularly.
-You can take a look at https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
-for an example on how to integrate the automatic renewal properly into a docker-compose setup.
+Also, don't forget to renew it regularly!
+You can take a look at https://medium.com/@pentacent/b4b8a60d3a71
+for an example on how to do automatic renewal in a docker-compose setup.
 
 ## Dockerized web services
 
