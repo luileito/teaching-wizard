@@ -6,30 +6,32 @@ $(function() {
   var $error   = $("#fb-error");
 
   $feedbackTab.click(function(ev) {
-    $feedbackForm.toggle("slide");
-    $success.hide();
-    $error.hide();
+      $feedbackForm.toggle("slide");
+      $success.hide();
+      $error.hide();
   });
 
   $feedbackForm.find("form").on('submit', function(ev) {
+    // Don't submit the form.
+    ev.preventDefault();
+
     var $form = $(this);
     $.ajax({
-      type: $form.attr('method'),
-      url: $form.attr('action'),
-      data: $form.serialize(),
-      success: function(response, status, xhr) {
-        $error.hide();
-        $success.html(response).fadeIn().delay(4500).fadeOut();
-      },
-      error: function(xhr, status, error) {
-        $success.hide();
-        $error.html(xhr.responseText).fadeIn();
-      }
+        type: $form.attr('method'),
+        url: $form.attr('action'),
+        data: $form.serialize(),
+        success: function(response, status, xhr) {
+            $error.hide();
+            $success.html(response).fadeIn();
+        },
+        error: function(xhr, status, error) {
+            $success.hide();
+            $error.html(xhr.responseText).fadeIn();
+        }
     });
-    // Don't submit the HTML form.
-    ev.preventDefault();
-  }).on('reset', function(ev) {
 
+  }).on('reset', function(ev) {
+      $feedbackForm.toggle("slide");
   });
 
 });

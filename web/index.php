@@ -35,12 +35,7 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
     <script>
     $(function() {
 
-//        $('.description').hide();
-//        $('.fold').on('click', function(ev) {
-//            ev.preventDefault();
-//            $(this).parents('.method').find('.description').toggle();
-//        });
-
+        // TODO: Agree on these bins.
         var groupSize = {
             1: '5-20 students',
             2: '25-40 students',
@@ -246,7 +241,7 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
               <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
               <span class="glyphicon-description"></span>
             </div>
-            <div class="form-group">
+            <div class="buttons">
               <button class="btn btn-primary" type="submit">Send</button>
               <button class="btn btn-secondary" type="reset">Close</button>
             </div>
