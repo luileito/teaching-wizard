@@ -25,15 +25,20 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
   <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="index.css" />
-    <script type="text/javascript" src="jquery-2.0.2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/fontawesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <script type="text/javascript" src="js/jquery-2.0.2.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="feedback.css" />
-    <script type="text/javascript" src="feedback.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/feedback.css" />
+    <script type="text/javascript" src="js/feedback.js"></script>
 
     <script>
     $(function() {
+
+        // Initialize tooltips.
+        $('[data-toggle="tooltip"]').tooltip();
 
         // TODO: Agree on these bins.
         var groupSize = {
@@ -104,11 +109,16 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
           <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 
           <?php
-            function slider_group($title, $param_name, $param_value, $min_label, $max_label) { // --- BEGIN slider fn ---
+            function slider_group($title, $param_name, $param_value, $min_label, $max_label, $explanation) { // --- BEGIN slider fn ---
               $disabled = $param_value === 0;
           ?>
             <div class="row slider-group <?php if ($disabled) echo 'inactive'; ?>">
-              <label class="col-sm-4 slider-title" for="<?php echo $param_name; ?>"><?php echo $title; ?></label>
+              <label class="col-sm-4 slider-title" for="<?php echo $param_name; ?>">
+                <?php echo $title; ?>
+                <span class="fa fa-question-circle-o"
+                  data-toggle="tooltip" data-placement="top"
+                  title="<?php echo $explanation; ?>"></span>
+              </label>
               <span class="col-sm-1 slider-end text-center"><?php echo $min_label; ?></span>
               <span class="col-sm-2 slider-range-wrap">
                 <span class="slider-value text-center"></span>
@@ -129,12 +139,19 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
           <?php } // --- END slider fn --- ?>
 
           <?php
-          slider_group('Group size', 'group_size', $params['group_size'], '<a title="1-20 students">small</a>', '<a title="100+ students">large</a>');
-          slider_group('Teacher experience', 'teacher_experience', $params['teacher_experience'], 'low', 'high');
-          slider_group('Student experience', 'student_experience', $params['student_experience'], 'low', 'high');
-          slider_group('Student workload', 'student_workload', $params['student_workload'], 'low', 'high');
-          slider_group('Teacher workload', 'teacher_workload', $params['teacher_workload'], 'low', 'high');
-          slider_group('Student interaction', 'student_interaction', $params['student_interaction'], 'low', 'high');
+          slider_group('Group size', 'group_size', $params['group_size'],
+            '<a title="1-20 students">small</a>', '<a title="100+ students">large</a>',
+            'How many students do you have in your course?');
+          slider_group('Teacher experience', 'teacher_experience', $params['teacher_experience'],
+            'low', 'high', 'Have you been teaching for many years and want to try new teaching methods?');
+          slider_group('Student experience', 'student_experience', $params['student_experience'],
+            'low', 'high', 'Do you assume some previous background for your course?');
+          slider_group('Student workload', 'student_workload', $params['student_workload'],
+            'low', 'high', 'How much effort should your students put in your course?');
+          slider_group('Teacher workload', 'teacher_workload', $params['teacher_workload'],
+            'low', 'high', 'How much effort are you willing to invest in your teaching?');
+          slider_group('Student interaction', 'student_interaction', $params['student_interaction'],
+            'low', 'high', 'How much interaction would you expect in your course?');
           ?>
 
           <div class="mt-4 form-buttons text-center">
@@ -234,12 +251,12 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
               <textarea class="form-control" name="comments" placeholder="Please write your feedback here..." rows="5" autofocus required></textarea>
             </div>
             <div role="alert" class="alert alert-danger" id="fb-error">
-              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-              <span class="glyphicon-description"></span>
+              <span class="fa fa-exclamation-sign" aria-hidden="true"></span>
+              <span class="fb-description"></span>
             </div>
             <div role="alert" class="alert alert-success" id="fb-success">
-              <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-              <span class="glyphicon-description"></span>
+              <span class="fa fa-ok-sign" aria-hidden="true"></span>
+              <span class="fb-description"></span>
             </div>
             <div class="buttons">
               <button class="btn btn-primary" type="submit">Send</button>

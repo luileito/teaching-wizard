@@ -2,8 +2,8 @@ $(function() {
 
   var $feedbackForm = $("#fb-form");
   var $feedbackTab  = $("#fb-tab");
-  var $success = $("#fb-success");
-  var $error   = $("#fb-error");
+  var $success = $("#fb-success fb-description");
+  var $error   = $("#fb-error fb-description");
 
   $feedbackTab.click(function(ev) {
       $feedbackForm.toggle("slide");
