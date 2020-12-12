@@ -1,0 +1,43 @@
+#fb-container {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  z-index: 1; /* Feedback element always on top */
+}
+
+#fb-form {
+  z-index: 3; /* 1 level higher than #fb-tab */
+  float: left;
+  width: 300px;
+  padding: 1em;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: 0px;
+  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  background-color: #ffffff;
+}
+
+#fb-tab {
+  z-index: 2; /* 1 level higher than #fb-container */
+  float: right;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  text-align: center;
+  background-color: #ee5050;
+  padding: 9px 3px;
+  border-radius: 0 5px 5px 0;
+  writing-mode: vertical-lr;
+  text-orientation: sideways;
+}
+
+#fb-tab:hover {
+  background-color: #ff6060;
+}
+
+#fb-form textarea {
+  resize: none;
+}
+
+#fb-form, #fb-err, #fb-success {
+  display: none;
+}

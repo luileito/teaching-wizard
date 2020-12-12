@@ -24,9 +24,14 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
 <html>
   <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
     <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="index.css" />
     <script type="text/javascript" src="jquery-2.0.2.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="feedback.css" />
+    <script type="text/javascript" src="feedback.js"></script>
+
     <script>
     $(function() {
 
@@ -227,16 +232,39 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
         </div>
       </div>
 
-    <footer>
-      <p>
-      &copy; <?php echo date('Y'); ?> Aalto University.
-      <p>
-        Teaching methods distilled from
-        O. Hyppönen & S. Lindén (2009)
-        <i>Handbook for teachers: course structures, teaching methods and assessment.</i>
-        Helsinki University of Technology.
-      </p>
-    </footer>
+      <div id="fb-container">
+        <div id="fb-form" class="panel panel-default">
+          <form method="POST" action="feedback.php" class="form-horizontal panel-body" role="form">
+            <div class="form-group">
+              <textarea class="form-control" name="comments" placeholder="Please write your feedback here..." rows="5" autofocus required></textarea>
+            </div>
+            <div role="alert" class="alert alert-danger" id="fb-error">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <span class="glyphicon-description"></span>
+            </div>
+            <div role="alert" class="alert alert-success" id="fb-success">
+              <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+              <span class="glyphicon-description"></span>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary" type="submit">Send</button>
+              <button class="btn btn-secondary" type="reset">Close</button>
+            </div>
+          </form>
+        </div>
+        <div id="fb-tab">Feedback</div>
+      </div>
+
+      <footer>
+        <p>
+        &copy; <?php echo date('Y'); ?> Aalto University.
+        <p>
+          Teaching methods distilled from
+          O. Hyppönen & S. Lindén (2009)
+          <i>Handbook for teachers: course structures, teaching methods and assessment.</i>
+          Helsinki University of Technology.
+        </p>
+      </footer>
 
     </div><!-- .container -->
 
