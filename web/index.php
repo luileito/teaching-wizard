@@ -7,6 +7,11 @@ require '../config.php';
 require '../common/request.php';
 global $CONFIG;
 
+require '../common/identicon/Identicon.php';
+require '../common/identicon/Generator/BaseGenerator.php';
+require '../common/identicon/Generator/GeneratorInterface.php';
+require '../common/identicon/Generator/SvgGenerator.php';
+
 $fetch_all = do_request($CONFIG->API_SERVER, $_POST);
 if ($fetch_all->error !== FALSE) {
     // FIXME: Display a fully-fledge web page instead of this sentence.
@@ -197,9 +202,21 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
             <?php
               $entry = (array) $fetch_all->result->database[$index];
               list($id, $title, $description, $pros, $cons) = $entry;
+
+              // Generate a random image.
+              $generator = new \Identicon\Generator\SvgGenerator();
+              $identicon = new \Identicon\Identicon($generator);
+              $identiuri = $identicon->getImageDataUri($title, 150, '#b3d9ff');
             ?>
 
-            <div class="method mb-5">
+            <div class="method row mb-5">
+
+              <div class="col-2">
+                <img alt="<?php echo sprintf('Image for %s', $title); ?>"
+                  width="150" height="150" src="<?php echo $identiuri; ?>" />
+              </div><!-- .col -->
+
+              <div class="col-10">
 
                 <?php if ($prev_submission): ?>
                   <?php meter(100 * $results->score); ?>
@@ -232,6 +249,7 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
                 <b>Cons:</b> <?php echo $cons; ?>
               </div>
             </div>
+          </div><!-- .col -->
 
           <?php endforeach; ?>
 
@@ -241,14 +259,15 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
             </div>
           <?php endif; ?>
 
-        </div>
-      </div>
+        </div><!-- .card-body -->
+      </div><!-- .card -->
 
       <div id="fb-container">
         <div id="fb-form" class="panel panel-default">
           <form method="POST" action="feedback.php" class="form-horizontal panel-body" role="form">
             <div class="form-group">
-              <textarea class="form-control" name="comments" placeholder="Please write your feedback here..." rows="5" autofocus required></textarea>
+              <textarea class="form-control" name="comments" rows="5" autofocus required
+                placeholder="Please write your feedback here..."></textarea>
             </div>
             <div role="alert" class="alert alert-danger" id="fb-error">
               <span class="fa fa-exclamation-sign" aria-hidden="true"></span>
