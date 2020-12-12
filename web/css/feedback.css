@@ -38,6 +38,6 @@
   resize: none;
 }
 
-#fb-form, #fb-err, #fb-success {
+#fb-form, #fb-error, #fb-success {
   display: none;
 }

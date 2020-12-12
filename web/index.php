@@ -211,12 +211,12 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
 
             <div class="method row mb-5">
 
-              <div class="col-2">
+              <div class="col-lg-2 col-sm-4">
                 <img alt="<?php echo sprintf('Image for %s', $title); ?>"
                   width="150" height="150" src="<?php echo $identiuri; ?>" />
               </div><!-- .col -->
 
-              <div class="col-10">
+              <div class="col-lg-10 col-sm-8">
 
                 <?php if ($prev_submission): ?>
                   <?php meter(100 * $results->score); ?>
@@ -243,6 +243,7 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
               <div class="description">
                 <?php echo $description; ?>
               </div>
+              <hr />
               <div class="pros-cons">
                 <b>Pros:</b> <?php echo $pros; ?>
                 <br/>

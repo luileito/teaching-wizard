@@ -73,7 +73,7 @@ footer {
     font-size: 90%;
     color: #777;
 }
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .slider-group {
         margin-bottom: 1.5em;
     }
@@ -88,9 +88,13 @@ footer {
     }
     .slider-end {
         width: auto;
+        visibility: hidden;
     }
     input[type="range"] {
         display: inline;
         width: auto;
+    }
+    .method img {
+        opacity: 0.5;
     }
 }
