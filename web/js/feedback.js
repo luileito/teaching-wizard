@@ -2,8 +2,8 @@ $(function() {
 
   var $feedbackForm = $("#fb-form");
   var $feedbackTab  = $("#fb-tab");
-  var $success = $("#fb-success fb-description");
-  var $error   = $("#fb-error fb-description");
+  var $success = $("#fb-success");
+  var $error   = $("#fb-error");
 
   $feedbackTab.click(function(ev) {
       $feedbackForm.toggle("slide");
@@ -22,11 +22,11 @@ $(function() {
         data: $form.serialize(),
         success: function(response, status, xhr) {
             $error.hide();
-            $success.html(response).fadeIn();
+            $success.fadeIn().html(response);
         },
         error: function(xhr, status, error) {
             $success.hide();
-            $error.html(xhr.responseText).fadeIn();
+            $error.fadeIn().html(xhr.responseText);
         }
     });
 
