@@ -18,7 +18,6 @@
 
 #fb-tab {
   z-index: 2; /* 1 level higher than #fb-container */
-  float: right;
   color: #fff;
   font-size: 20px;
   cursor: pointer;
