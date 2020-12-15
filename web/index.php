@@ -40,97 +40,11 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
     <link rel="stylesheet" type="text/css" href="css/feedback.css" />
     <script type="text/javascript" src="js/feedback.js"></script>
 
-    <script>
-    $(function() {
+    <script type="text/javascript" src="js/index.js"></script>
 
-        // Initialize tooltips.
-        $('[data-toggle="tooltip"]').tooltip();
-
-        function addStar(el) {
-            $(el).removeClass('fa-star-o').addClass('fa-star').attr('title', 'Mark as favorite');
-        }
-
-        function removeStar(el) {
-            $(el).removeClass('fa-star').addClass('fa-star-o').attr('title', 'Unmark as favorite');
-        }
-
-        // "Mark as favorite" behavior.
-        $('.method .title .fa')
-        .css('cursor', 'pointer')
-        .on('click', function(ev) {
-            var methodId = $(this).parent().attr('id');
-            var selected = !!Cookies.get(methodId);
-            if (selected) {
-                Cookies.remove(methodId);
-                removeStar(this);
-            } else {
-                Cookies.set(methodId, 1);
-                addStar(this);
-            }
-        })
-        .each(function(index, el) {
-            // Init stars.
-            var methodId = $(this).parent().attr('id');
-            var selected = !!Cookies.get(methodId);
-            if (selected) addStar(this);
-        });
-
-        // TODO: Agree on these bins.
-        var groupSize = {
-            1: '5-20 students',
-            2: '25-40 students',
-            3: '45-60 students',
-            4: '65-90 students',
-            5: '100+ students',
-        };
-
-        $('input#group_size')
-        .on('input', function(ev) {
-            var val = groupSize[ev.target.value];
-            this.$sliderElement = $(this).parent().find('.slider-value');
-            this.$sliderElement.css({ opacity: 1 }).text(val);
-        })
-        .on('change', function(ev) {
-            this.$sliderElement.delay(1000).animate({ opacity: 0 }, function(e) {
-                $(this).empty().css({ opacity: 1 });
-            });
-        });
-
-        $('input[type=checkbox]')
-        .on('click', function(ev) {
-            // Reset status of parent container to begin with.
-            var $row = $(this).parents('.slider-group').removeClass('inactive');
-            // Then update status.
-            var isChecked = $(this).is(':checked');
-            if (!isChecked) $row.addClass('inactive');
-            // Also update slider status and label text.
-            var statusLabel = isChecked ? 'enabled' : 'disabled';
-            $row.find('input[type=range]').attr('disabled', !isChecked).find('.slider-status').text(statusLabel);
-        });
-
-        <?php if ($prev_submission): ?>
-
-        var $methodEntries = $('.method');
-        var numSuggestions = 3;
-        var $hiddenMethods = $methodEntries.slice(numSuggestions).hide();
-        var $paginationBtn = $('#loadmore');
-        if (!$methodEntries.length) {
-            $paginationBtn.html('<span class="text-muted">Please select your filtering options.</span>');
-        } else {
-            $paginationBtn.find('input').on('click', function(ev) {
-                // Load one more suggestion.
-                var $moreMethods = $('.method:hidden').slice(0, 1).show('fast');
-                // Hide button when all suggestions are shown.
-                if ($('.method:hidden').length === 0) {
-                    $(this).parent().html('<span class="text-muted">No more results found.</span>');
-                }
-            });
-        }
-
-        <?php endif; ?>
-
-    });
-    </script>
+    <?php if ($prev_submission): ?>
+      <script type="text/javascript" src="js/pagination.js"></script>
+    <?php endif; ?>
   </head>
   <body>
 
@@ -205,8 +119,8 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
         <?php echo sprintf('%d teaching methods currently available!', count($fetch_all->result->database)); ?>
       </h4>
 
-      <!--
       <?php if ($prev_submission): ?>
+        <!--
         <p class="text-center text-muted">
         <?php if (!empty($fetch_all->result->database)): ?>
             <?php echo sprintf('There are %d teaching methods matching your criteria.', count($fetch_all->result->database)); ?>
@@ -214,10 +128,10 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
             That's a creative presets combination &#128521;
         <?php endif; ?>
         </p>
+        -->
       <?php endif; ?>
-      -->
 
-      <div class="card">
+      <div class="card" id="methods-list">
         <div class="card-header">Teaching methods</div>
         <div class="card-body">
 
@@ -288,12 +202,6 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
           </div><!-- .col -->
 
           <?php endforeach; ?>
-
-          <?php if ($prev_submission): ?>
-            <div id="loadmore">
-              <input type="button" class="btn btn-info" value="Load more" />
-            </div>
-          <?php endif; ?>
 
         </div><!-- .card-body -->
       </div><!-- .card -->
