@@ -43,7 +43,9 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
     <script type="text/javascript" src="js/index.js"></script>
 
     <?php if ($prev_submission): ?>
+      <!--
       <script type="text/javascript" src="js/pagination.js"></script>
+      -->
     <?php endif; ?>
   </head>
   <body>
