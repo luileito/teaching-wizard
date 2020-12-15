@@ -35,6 +35,7 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
     <link rel="stylesheet" type="text/css" href="css/index.css" />
     <script type="text/javascript" src="js/jquery-2.0.2.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="js/cookies.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/feedback.css" />
     <script type="text/javascript" src="js/feedback.js"></script>
@@ -44,6 +45,35 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
 
         // Initialize tooltips.
         $('[data-toggle="tooltip"]').tooltip();
+
+        function addStar(el) {
+            $(el).removeClass('fa-star-o').addClass('fa-star').attr('title', 'Mark as favorite');
+        }
+
+        function removeStar(el) {
+            $(el).removeClass('fa-star').addClass('fa-star-o').attr('title', 'Unmark as favorite');
+        }
+
+        // "Mark as favorite" behavior.
+        $('.method .title .fa')
+        .css('cursor', 'pointer')
+        .on('click', function(ev) {
+            var methodId = $(this).parent().attr('id');
+            var selected = !!Cookies.get(methodId);
+            if (selected) {
+                Cookies.remove(methodId);
+                removeStar(this);
+            } else {
+                Cookies.set(methodId, 1);
+                addStar(this);
+            }
+        })
+        .each(function(index, el) {
+            // Init stars.
+            var methodId = $(this).parent().attr('id');
+            var selected = !!Cookies.get(methodId);
+            if (selected) addStar(this);
+        });
 
         // TODO: Agree on these bins.
         var groupSize = {
@@ -66,7 +96,8 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
             });
         });
 
-        $('input[type=checkbox]').on('click', function(ev) {
+        $('input[type=checkbox]')
+        .on('click', function(ev) {
             // Reset status of parent container to begin with.
             var $row = $(this).parents('.slider-group').removeClass('inactive');
             // Then update status.
@@ -202,6 +233,8 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
             <?php
               $entry = (array) $fetch_all->result->database[$index];
               list($id, $title, $description, $pros, $cons) = $entry;
+              // Normalize title, for JS manipulation.
+              $title_hash = str_replace(' ', '-', strtolower(trim($title)));
 
               // Generate a random image.
               $generator = new \Identicon\Generator\SvgGenerator();
@@ -222,8 +255,10 @@ $prev_submission = !empty($_POST) && !isset($_POST['reset']);
                   <?php meter(100 * $results->score); ?>
                 <?php endif; ?>
 
-              <h4 class="title">
+              <h4 class="title" id="<?php echo $title_hash; ?>">
                 <?php echo $title; ?>
+                <span class="fa fa-star-o" aria-hidden="true"
+                  data-toggle="tooltip" data-placement="top"></span>
               </h4>
 
               <?php if ($prev_submission): ?>

@@ -58,6 +58,12 @@ input[type="range"] {
 .method .title {
     font-size: 200%;
 }
+.method .title * {
+    vertical-align: middle;
+}
+.method .title .fa {
+    font-size: 50%;
+}
 .method .description {
     font-size: 130%;
     font-style: italic;
