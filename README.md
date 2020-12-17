@@ -61,7 +61,7 @@ If running on Docker, set `PDO_URI=sqlite:/usr/data/methods.db` in your `.env` f
 since the absolute path of the Dockerized system is `/usr`.
 
 Be sure to uncomment the volume includes for the `api` and `admin` services.
-The lines are marked before with 
+The lines are marked before with
 
 `# If using SQLite, include volume to database file`.
 
@@ -94,8 +94,8 @@ And set `PDO_URI="mysql:host=localhost;dbname=teaching_wizard"` in your `.env` f
 If running on Docker, use the database host name `db` in the connection URI in your `.env` file,
 like so: `PDO_URI="mysql:host=db;dbname=teaching_wizard"`.
 
-Also, you must set the variables `PDO_USER`, `PDO_PASS`, `MYSQL_ROOT_PASS`,
-and `PDO_DATABASE` (make sure it matches the `dbname=` property of the `PDO_URI`).
+Also, you must set the variables `PDO_USER`, `PDO_PASS` and `PDO_DATABASE`
+(make sure it matches the `dbname=` property of the `PDO_URI`).
 
 You may want to customize the forwarded port of the Docker database to your host machine with the
 `DB_PORT` setting (e.g., if you have a local MySQL database running as well).
